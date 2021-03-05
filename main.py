@@ -447,14 +447,11 @@ class Cube2x2:
                     if value > max_value:
                         max_value = value
 
-                temp_pos = current_pos.copy()
-                action_i = None
-
                 while current_node.parent != None:
                     action_i = actions.index(current_node.previous_action)
 
-                    temp_pos = [temp_pos[0] - 1, current_node.parent]
-                    current_node = tree[temp_pos[0]][temp_pos[1]]
+                    current_pos = [current_pos[0] - 1, current_node.parent]
+                    current_node = tree[current_pos[0]][current_pos[1]]
 
                     if current_node.W[action_i] < max_value:
                         current_node.W[action_i] = max_value
@@ -462,13 +459,10 @@ class Cube2x2:
                     current_node.N[action_i] += 1
                     current_node.L[action_i] -= v
 
-                current_pos = [0,0]
-                current_node = tree[0][0]
-
             else:
                 print('Selecting Action')
 
-                action = 0
+                action_i = 0
                 max = -10000
 
                 for i in range(len(actions)):
@@ -481,17 +475,24 @@ class Cube2x2:
                     U = c * current_node.P[i] * (math.sqrt(summation) / (1 + current_node.N[i]) )
                     Q = current_node.W[i] - current_node.L[i]
 
+                    print(U + Q)
+
                     if U + Q > max:
                         max = U + Q
-                        action = i
+                        action_i = i
 
-                current_node.L[action] += v
-                current_pos = [current_pos[0] + 1, current_node.children[i]]
+                current_node.L[action_i] += v
+                print('Action selected: ', actions[action_i])
+                current_pos = [current_pos[0] + 1, current_node.children[action_i]]
                 current_node = tree[current_pos[0]][current_pos[1]]
 
-            if Cube2x2(current_node.state).isSolved():
-                current_pos = [0,0]
-                current_node = tree[0][0]
+                if Cube2x2(current_node.state).isSolved():
+
+                    while current_node.parent != None:
+                        temp_action_i = actions.index(current_node.previous_action)
+                        current_pos = [current_pos[0] - 1, current_node.parent]
+                        current_node = tree[current_pos[0]][current_pos[1]]
+                        current_node.N[temp_action_i] += 1
 
         for row in range(1, len(tree)):
             for node in range(len(tree[row])):
@@ -653,10 +654,10 @@ start = time.time()
 cube = Cube2x2(list(input_state))
 print(cube.state)
 print('\n--------AUTODIDACTIC ITERATION--------\n')
-model = ADI(0.5)
+model = ADI(0.2)
 print('\n--------MONTE CARLO TREE SEARCH--------\n')
 
-solution = cube.MCTS_solve(model, 0.5)
+solution = cube.MCTS_solve(model, 0.2)
 print('--------------------------\nSolution: ', solution, '\n--------------------------')
 
 end = time.time()
