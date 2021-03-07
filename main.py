@@ -2,6 +2,9 @@ import random
 import math
 import time
 import numpy as np
+import os
+import tensorflow as tf
+from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 
@@ -426,14 +429,14 @@ class Cube2x2:
                     children_index = 0
 
                     if current_pos[0] < len(tree) - 1:
-                        children_index = len(tree[current_pos[0] + 1]) + 1
+                        children_index = len(tree[current_pos[0] + 1])
 
                     current_node.children = range(children_index, children_index + 12)
 
                     if child_cube.isSolved():
                         print('---------------------\nSOLVED CUBE ADDED\n---------------------')
 
-                    new_children.append(Node(child_cube.state, P=model.predict(np.array([encodeOneHot(child_cube.state)]))[0][1:], parent=current_pos[1], previous_action=action))
+                    new_children.append(Node(child_cube.state.copy(), P=model.predict(np.array([encodeOneHot(child_cube.state)]))[0][1:], parent=current_pos[1], previous_action=action))
 
                 if current_pos[0] < len(tree) - 1:
                     tree[current_pos[0] + 1] += new_children
@@ -502,7 +505,7 @@ class Cube2x2:
 
                     solution = []
                     while current_node.previous_action != None:
-                        solution.append(current_node.previous_action)
+                        solution.insert(0, current_node.previous_action)
                         current_pos = [current_pos[0] - 1, current_node.parent]
                         current_node = tree[current_pos[0]][current_pos[1]]
 
@@ -573,15 +576,17 @@ def decodeOneHot(one_hot):
 
     return state
 
-def ADI(minutes):
+def ADI(minutes, model=None):
 
-    # Creating the value and policy network
-    model = Sequential()
-    model.add(Dense(50, input_dim=144, activation='relu'))
-    model.add(Dense(50, activation='relu'))
-    model.add(Dense(13, activation='softmax'))
+    if model == None:
 
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+        # Creating the value and policy network
+        model = Sequential()
+        model.add(Dense(50, input_dim=144, activation='relu'))
+        model.add(Dense(50, activation='relu'))
+        model.add(Dense(13, activation='softmax'))
+
+        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     # Training Process
 
@@ -596,14 +601,14 @@ def ADI(minutes):
 
         for i in range(14):
             cube.move(moves[random.randint(0, 11)])
-            training_inputs.append(Cube2x2(cube.state))
+            training_inputs.append(Cube2x2(cube.state.copy()))
 
         for i in range(len(training_inputs)):
             value_target = -100
             policy_target_move = None
 
             for move in moves:
-                child = Cube2x2(training_inputs[i].state)
+                child = Cube2x2(training_inputs[i].state.copy())
                 child.move(move)
                 value_estimate = model.predict(np.array([encodeOneHot(child.state)]))[0][0]
 
@@ -642,7 +647,7 @@ def ADI(minutes):
             elif policy_target_move == 'Bp':
                 policy_target = [0,0,0,0,0,0,0,0,0,0,0,1]
 
-            model.fit(np.array([encodeOneHot(child.state)]), np.array([[value_target] + policy_target]), sample_weight=np.array([1/(i+1)]))
+            model.fit(np.array([encodeOneHot(training_inputs[i].state)]), np.array([[value_target] + policy_target]), sample_weight=np.array([1/(i+1)]))
 
     return model
 
@@ -653,11 +658,16 @@ start = time.time()
 
 cube = Cube2x2(list(input_state))
 print(cube.state)
-print('\n--------AUTODIDACTIC ITERATION--------\n')
-model = ADI(0.2)
-print('\n--------MONTE CARLO TREE SEARCH--------\n')
 
-solution = cube.MCTS_solve(model, 0.2)
+print('\n--------AUTODIDACTIC ITERATION--------\n')
+# model = ADI(1)
+# model.save('model')
+
+model = tf.keras.models.load_model('model')
+
+print('\n--------MONTE CARLO TREE SEARCH--------\n')
+solution = cube.MCTS_solve(model, 1)
+
 print('--------------------------\nSolution: ', solution, '\n--------------------------')
 
 end = time.time()
