@@ -594,6 +594,8 @@ def ADI(minutes, model=None):
     seconds = minutes * 60
     start = time.time()
 
+    total_samples = 0
+
     while (time.time() - start) < seconds:
 
         cube = Cube2x2()
@@ -602,6 +604,8 @@ def ADI(minutes, model=None):
         for i in range(14):
             cube.move(moves[random.randint(0, 11)])
             training_inputs.append(Cube2x2(cube.state.copy()))
+
+        total_samples += 14
 
         for i in range(len(training_inputs)):
             value_target = -100
@@ -649,6 +653,8 @@ def ADI(minutes, model=None):
 
             model.fit(np.array([encodeOneHot(training_inputs[i].state)]), np.array([[value_target] + policy_target]), sample_weight=np.array([1/(i+1)]))
 
+    print('Total Samples: ', total_samples)
+
     return model
 
 
@@ -660,10 +666,11 @@ cube = Cube2x2(list(input_state))
 print(cube.state)
 
 print('\n--------AUTODIDACTIC ITERATION--------\n')
-# model = ADI(1)
-# model.save('model')
+model = ADI(1)
+model.save('model')
 
-model = tf.keras.models.load_model('model')
+# model = tf.keras.models.load_model('model')
+# ADI(1, model)
 
 print('\n--------MONTE CARLO TREE SEARCH--------\n')
 solution = cube.MCTS_solve(model, 1)
