@@ -378,23 +378,39 @@ class Cube2x2:
                                                                 if self.testSequence([i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14]): return [i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14]
         return 'Error: no solution found'
 
-    def randomSolve(self):
+    def randomSolve(self, minutes):
 
         if self.isSolved():
             return 'Already solved'
 
-        moves = ['F', 'Fp', 'L', 'Lp', 'R', 'Rp', 'U', 'Up', 'D', 'Dp', 'B', 'Bp']
+        actions = ['F', 'Fp', 'L', 'Lp', 'R', 'Rp', 'U', 'Up', 'D', 'Dp', 'B', 'Bp']
+        min_len = 1000
+        min_sequence = None
 
-        while True:
+        seconds = minutes * 60
+        start = time.time()
 
-            rand_length = random.randint(1, 14)
+        while (time.time() - start) < seconds:
+
             sequence = []
+            temp_cube = Cube2x2(self.state.copy())
 
-            for i in range(rand_length):
-                sequence.append(moves[random.randint(0, 11)])
+            for i in range(14):
 
-            if self.testSequence(sequence):
-                return sequence
+                action = actions[random.randint(0, 11)]
+                sequence.append(action)
+                temp_cube.move(action)
+
+                if temp_cube.isSolved():
+                    print(sequence)
+
+                    if len(sequence) < min_len:
+                        min_len = len(sequence)
+                        min_sequence = sequence.copy()
+
+                    continue
+
+        return min_sequence
 
     def MCTS_solve(self, model, minutes):
 
@@ -676,6 +692,8 @@ print('\n--------MONTE CARLO TREE SEARCH--------\n')
 solution = cube.MCTS_solve(model, 1)
 
 print('--------------------------\nSolution: ', solution, '\n--------------------------')
+
+# print('--------------------------\nSolution: ', cube.randomSolve(.5), '\n--------------------------')
 
 end = time.time()
 print((end - start), 'seconds')

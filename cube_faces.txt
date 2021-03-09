@@ -1,6 +1,10 @@
-1. Blue
-2. Orange
-3. Red
-4. Yellow
-5. White
-6. Green
+When inputting the cube state, type the colors of all of the stickers as capital letters.
+For a solved cube, the state would get entered as 'BBBBOOOORRRRYYYYWWWWGGGG'
+In the example above, each sequence of 4 characters represents 1 face of the cube.
+The cube faces are entered in this order:
+1. Front
+2. Left
+3. Right
+4. Up
+5. Down
+6. Back
