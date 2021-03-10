@@ -408,9 +408,9 @@ class Cube2x2:
                         min_len = len(sequence)
                         min_sequence = sequence.copy()
 
-                    continue
+                    break
 
-        return min_sequence
+        return prune(min_sequence)
 
     def MCTS_solve(self, model, minutes):
 
@@ -525,7 +525,7 @@ class Cube2x2:
                         current_pos = [current_pos[0] - 1, current_node.parent]
                         current_node = tree[current_pos[0]][current_pos[1]]
 
-                    return solution
+                    return prune(solution)
         return 'No solution found'
 
 
@@ -673,6 +673,50 @@ def ADI(minutes, model=None):
 
     return model
 
+def prune(sequence):
+
+    i = 0
+
+    while i <= len(sequence) - 4:
+
+        if sequence[i] == sequence[i+1] and sequence[i] == sequence[i+2] and sequence[i] == sequence[i+3]:
+            for j in range(4):
+                sequence.pop(i)
+
+        else:
+            i += 1
+
+    i = 0
+
+    while i <= len(sequence) - 3:
+
+        if sequence[i] == sequence[i+1] and sequence[i] == sequence[i+2]:
+            if len(sequence[i]) == 1:
+                replacement = sequence[i] + 'p'
+            else:
+                replacement = sequence[i][0]
+
+            for j in range(3):
+                sequence.pop(i)
+
+            sequence.insert(i, replacement)
+
+        i += 1
+
+    i = 0
+
+    while i <= len(sequence) - 2:
+
+        if len(sequence[i]) != len(sequence[i+1]) and sequence[i][0] == sequence[i+1][0]:
+
+            for j in range(2):
+                sequence.pop(i)
+
+        else:
+            i += 1
+
+    return sequence
+
 
 input_state = input('Input the cube state: ')
 
@@ -682,10 +726,10 @@ cube = Cube2x2(list(input_state))
 print(cube.state)
 
 print('\n--------AUTODIDACTIC ITERATION--------\n')
-model = ADI(1)
-model.save('model')
+# model = ADI(5)
+# model.save('model')
 
-# model = tf.keras.models.load_model('model')
+model = tf.keras.models.load_model('model')
 # ADI(1, model)
 
 print('\n--------MONTE CARLO TREE SEARCH--------\n')
