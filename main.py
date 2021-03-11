@@ -410,7 +410,10 @@ class Cube2x2:
 
                     break
 
-        return prune(min_sequence)
+        if min_sequence == None:
+            return 'No solution found'
+        else:
+            return prune(min_sequence)
 
     def MCTS_solve(self, model, minutes):
 
@@ -494,8 +497,6 @@ class Cube2x2:
                     U = c * current_node.P[i] * (math.sqrt(summation) / (1 + current_node.N[i]) )
                     Q = current_node.W[i] - current_node.L[i]
 
-                    print(U + Q)
-
                     if U + Q > max:
                         max = U + Q
                         action_i = i
@@ -527,6 +528,31 @@ class Cube2x2:
 
                     return prune(solution)
         return 'No solution found'
+
+    def compare(self, model):
+
+        print('\n----------------- bruteSolve -----------------\n')
+        start = time.time()
+        solution_bruteSolve = self.bruteSolve()
+        seconds = time.time() - start
+        minutes = seconds / 60
+
+        print('\n----------------- randomSolve -----------------\n')
+        solution_randomSolve = self.randomSolve(minutes)
+
+        print('\n----------------- MCTS_solve -----------------\n')
+        solution_MCTS_solve = self.MCTS_solve(model, minutes)
+
+        print('\nbruteSolve solution:', solution_bruteSolve)
+        print('Solution length:', len(solution_bruteSolve))
+
+        print('\nrandomSolve solution:', solution_randomSolve)
+        print('Solution length:', len(solution_randomSolve))
+
+        print('\nMCTS_solve solution:', solution_MCTS_solve)
+        print('Solution length:', len(solution_MCTS_solve))
+
+        print('\nExecution time allowed for each method:', seconds, 'seconds')
 
 
 class Node:
@@ -717,27 +743,39 @@ def prune(sequence):
 
     return sequence
 
+def test():
 
-input_state = input('Input the cube state: ')
+    input_state = input('Input the cube state: ')
 
-start = time.time()
+    start = time.time()
 
-cube = Cube2x2(list(input_state))
-print(cube.state)
+    cube = Cube2x2(list(input_state))
+    print(cube.state)
 
-print('\n--------AUTODIDACTIC ITERATION--------\n')
-# model = ADI(5)
-# model.save('model')
+    print('\n--------AUTODIDACTIC ITERATION--------\n')
+    # model = ADI(5)
+    # model.save('model')
 
-model = tf.keras.models.load_model('model')
-# ADI(1, model)
+    model = tf.keras.models.load_model('model')
+    # ADI(1, model)
 
-print('\n--------MONTE CARLO TREE SEARCH--------\n')
-solution = cube.MCTS_solve(model, 1)
+    print('\n--------MONTE CARLO TREE SEARCH--------\n')
+    solution = cube.MCTS_solve(model, 1)
 
-print('--------------------------\nSolution: ', solution, '\n--------------------------')
+    print('--------------------------\nSolution: ', solution, '\n--------------------------')
 
-# print('--------------------------\nSolution: ', cube.randomSolve(.5), '\n--------------------------')
+    print((time.time() - start), 'seconds')
 
-end = time.time()
-print((end - start), 'seconds')
+def test_compare():
+
+    input_state = input('Input the cube state: ')
+
+    cube = Cube2x2(list(input_state))
+    print(cube.state)
+
+    model = tf.keras.models.load_model('model')
+
+    cube.compare(model)
+
+
+test_compare()
