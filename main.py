@@ -624,8 +624,8 @@ def ADI(minutes, model=None):
 
         # Creating the value and policy network
         model = Sequential()
-        model.add(Dense(50, input_dim=144, activation='relu'))
-        model.add(Dense(50, activation='relu'))
+        model.add(Dense(400, input_dim=144, activation='relu'))
+        model.add(Dense(200, activation='relu'))
         model.add(Dense(13, activation='softmax'))
 
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
@@ -695,7 +695,7 @@ def ADI(minutes, model=None):
 
             model.fit(np.array([encodeOneHot(training_inputs[i].state)]), np.array([[value_target] + policy_target]), sample_weight=np.array([1/(i+1)]))
 
-    print('Total Samples: ', total_samples)
+    print('Total Samples:', total_samples)
 
     return model
 
@@ -753,16 +753,16 @@ def test():
     print(cube.state)
 
     print('\n--------AUTODIDACTIC ITERATION--------\n')
-    # model = ADI(5)
-    # model.save('model')
+    model = ADI(1)
+    model.save('model')
 
-    model = tf.keras.models.load_model('model')
+    # model = tf.keras.models.load_model('model')
     # ADI(1, model)
 
     print('\n--------MONTE CARLO TREE SEARCH--------\n')
     solution = cube.MCTS_solve(model, 1)
 
-    print('--------------------------\nSolution: ', solution, '\n--------------------------')
+    print('--------------------------\nSolution:', solution, '\n--------------------------')
 
     print((time.time() - start), 'seconds')
 
@@ -778,4 +778,11 @@ def test_compare():
     cube.compare(model)
 
 
-test_compare()
+start = time.time()
+
+cube = Cube2x2()
+print('\n--------AUTODIDACTIC ITERATION--------\n')
+model = ADI(620)
+model.save('model_620min')
+
+print((time.time() - start), 'seconds')
