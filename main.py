@@ -702,20 +702,15 @@ def ADI(minutes, model=None):
 def prune(sequence):
 
     i = 0
-
     while i <= len(sequence) - 4:
-
         if sequence[i] == sequence[i+1] and sequence[i] == sequence[i+2] and sequence[i] == sequence[i+3]:
             for j in range(4):
                 sequence.pop(i)
-
         else:
             i += 1
 
     i = 0
-
     while i <= len(sequence) - 3:
-
         if sequence[i] == sequence[i+1] and sequence[i] == sequence[i+2]:
             if len(sequence[i]) == 1:
                 replacement = sequence[i] + 'p'
@@ -726,18 +721,13 @@ def prune(sequence):
                 sequence.pop(i)
 
             sequence.insert(i, replacement)
-
         i += 1
 
     i = 0
-
     while i <= len(sequence) - 2:
-
         if len(sequence[i]) != len(sequence[i+1]) and sequence[i][0] == sequence[i+1][0]:
-
             for j in range(2):
                 sequence.pop(i)
-
         else:
             i += 1
 
@@ -753,14 +743,14 @@ def test():
     print(cube.state)
 
     print('\n--------AUTODIDACTIC ITERATION--------\n')
-    model = ADI(1)
-    model.save('model')
+    # model = ADI(1)
+    # model.save('model')
 
-    # model = tf.keras.models.load_model('model')
+    model = tf.keras.models.load_model('model_620min')
     # ADI(1, model)
 
     print('\n--------MONTE CARLO TREE SEARCH--------\n')
-    solution = cube.MCTS_solve(model, 1)
+    solution = cube.MCTS_solve(model, 3)
 
     print('--------------------------\nSolution:', solution, '\n--------------------------')
 
@@ -773,16 +763,19 @@ def test_compare():
     cube = Cube2x2(list(input_state))
     print(cube.state)
 
-    model = tf.keras.models.load_model('model')
+    model = tf.keras.models.load_model('model_620min')
 
     cube.compare(model)
 
+def train():
 
-start = time.time()
+    start = time.time()
 
-cube = Cube2x2()
-print('\n--------AUTODIDACTIC ITERATION--------\n')
-model = ADI(620)
-model.save('model_620min')
+    print('\n--------AUTODIDACTIC ITERATION--------\n')
+    model = ADI(620)
+    model.save('model_620min')
 
-print((time.time() - start), 'seconds')
+    print((time.time() - start), 'seconds')
+
+
+test()
