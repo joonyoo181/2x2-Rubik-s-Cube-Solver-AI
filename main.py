@@ -11,8 +11,11 @@ from tensorflow.keras.layers import Dense
 
 class Cube2x2:
 
-    def __init__(self, state = ['B','B','B','B','O','O','O','O','R','R','R','R','Y','Y','Y','Y','W','W','W','W','G','G','G','G']):
+    def __init__(self, state=None):
         self.state = state
+
+        if self.state == None:
+            self.state = ['B','B','B','B','O','O','O','O','R','R','R','R','Y','Y','Y','Y','W','W','W','W','G','G','G','G']
 
     def isSolved(self):
 
@@ -777,5 +780,3 @@ def train():
 
     print((time.time() - start), 'seconds')
 
-
-test()
