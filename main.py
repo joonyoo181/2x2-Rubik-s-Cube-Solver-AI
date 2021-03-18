@@ -22,9 +22,6 @@ class Cube2x2:
         face1 = self.state[:4]
         face2 = self.state[4:8]
         face3 = self.state[8:12]
-        face4 = self.state[12:16]
-        face5 = self.state[16:20]
-        face6 = self.state[20:]
 
         for color in face1:
             if color != face1[0]:
@@ -35,15 +32,7 @@ class Cube2x2:
         for color in face3:
             if color != face3[0]:
                 return False
-        for color in face4:
-            if color != face4[0]:
-                return False
-        for color in face5:
-            if color != face5[0]:
-                return False
-        for color in face6:
-            if color != face6[0]:
-                return False
+
         return True
 
     def move(self, turn):
