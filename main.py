@@ -455,8 +455,8 @@ class Cube2x2:
                     tree.append(new_children)
 
                 max_value = -1000
-                for i in range(12):
-                    value = model.predict(np.array([encodeOneHot(current_node.state)]))[0][0]
+                for i in current_node.children:
+                    value = model.predict(np.array([encodeOneHot(tree[current_pos[0] + 1][i].state)]))[0][0] # Potential Error
 
                     if value > max_value:
                         max_value = value
