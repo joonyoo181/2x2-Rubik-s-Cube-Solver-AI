@@ -456,7 +456,7 @@ class Cube2x2:
 
                 max_value = -1000
                 for i in current_node.children:
-                    value = model.predict(np.array([encodeOneHot(tree[current_pos[0] + 1][i].state)]))[0][0] # Potential Error
+                    value = model.predict(np.array([encodeOneHot(tree[current_pos[0] + 1][i].state)]))[0][0]
 
                     if value > max_value:
                         max_value = value
@@ -483,8 +483,8 @@ class Cube2x2:
                     # U(a)
                     summation = 0
 
-                    for node in tree[current_pos[0]]:
-                        summation += node.N[i]
+                    for j in range(len(actions)):
+                        summation += current_node.N[j]
 
                     U = c * current_node.P[i] * (math.sqrt(summation) / (1 + current_node.N[i]) )
                     Q = current_node.W[i] - current_node.L[i]
