@@ -14,6 +14,17 @@ https://drive.google.com/file/d/10QQbVArmWCOT2V-F4Zf22iZ-0-ImW2VP/view?usp=shari
 
 ## Running the Program
 
-### 1) Input the Cube State
+### Input the Cube State
+Type the colors of all of the stickers as capital letters <br />
+The cube faces are entered in this order: <br />
+1. Front <br />
+2. Left <br />
+3. Right <br />
+4. Up <br />
+5. Down <br />
+6. Back <br />
+Each sequence of 4 characters represents 1 face of the cube. <br />
+Ex) Solved State = 'BBBBOOOORRRRYYYYWWWWGGGG'
 
-### 2) Execute the Program
+### Execute the Program
+Run ```python main.py``` or ```python3 main.py``` depending on your Python version
