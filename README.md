@@ -5,13 +5,12 @@ As part of a research program at California Institute of Technology, my team and
 We researched and tested deep approximate value iteration, weighted A* search, Autodidactic Iteration, and Monte Carlo Tree Search => Ended up using Autodidactic Iteration, and Monte Carlo Tree Search with neural networks.
 
 ### Result
-```model_old``` was trained for ~60 mins => ~26% accuracy
-<p/>
+```model_old``` was trained for ~60 mins => ~26% accuracy <br />
 ```model_620min``` was trained for ~620 mins => 83.8% accuracy
 
 ### Credits
-<p> https://arxiv.org/pdf/1805.07470.pdf </p>
-<p> https://drive.google.com/file/d/10QQbVArmWCOT2V-F4Zf22iZ-0-ImW2VP/view?usp=sharing </p>
+https://arxiv.org/pdf/1805.07470.pdf <br />
+https://drive.google.com/file/d/10QQbVArmWCOT2V-F4Zf22iZ-0-ImW2VP/view?usp=sharing
 
 ## Running the Program
 
