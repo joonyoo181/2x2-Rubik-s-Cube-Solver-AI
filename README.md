@@ -1,4 +1,4 @@
-# 2x2-Rubiks-Cube-Solver-AI
+# 2x2 Rubiks Cube Solver AI
 
 ## Summary
 As part of a research program at California Institute of Technology, my team and I developed an Autonomous program that could solve 2x2 Rubik's Cube at any given state.
