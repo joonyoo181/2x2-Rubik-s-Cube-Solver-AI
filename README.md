@@ -9,8 +9,8 @@ We researched and tested deep approximate value iteration, weighted A* search, A
 ```model_620min``` was trained for ~620 mins => 83.8% accuracy
 
 ### Credits
-https://arxiv.org/pdf/1805.07470.pdf
-https://drive.google.com/file/d/10QQbVArmWCOT2V-F4Zf22iZ-0-ImW2VP/view?usp=sharing
+<p> https://arxiv.org/pdf/1805.07470.pdf </p>
+<p> https://drive.google.com/file/d/10QQbVArmWCOT2V-F4Zf22iZ-0-ImW2VP/view?usp=sharing </p>
 
 ## Running the Program
 
